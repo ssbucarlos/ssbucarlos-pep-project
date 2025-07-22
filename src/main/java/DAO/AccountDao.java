@@ -22,7 +22,7 @@ public class AccountDao {
 
     private AccountDao(){}
 
-    public Account insertAccount(Account account){
+    public Optional<Account> insertAccount(Account account){
         Connection connection = ConnectionUtil.getConnection();
         try{
             String sql = "INSERT INTO `account`(`username`, `password`) VALUES (?,?)";
@@ -33,15 +33,15 @@ public class AccountDao {
             ResultSet pkeyResultSet = preparedStatement.getGeneratedKeys();
             if(pkeyResultSet.next()){
                 int generated_id = (int) pkeyResultSet.getLong(1);
-                return new Account(generated_id, account.getUsername(), account.getPassword());
+                return Optional.of(new Account(generated_id, account.getUsername(), account.getPassword()));
             }
         }catch(SQLException e){
             System.out.println(e.getMessage());
         }
-        return null; 
+        return Optional.empty(); 
     }
 
-    public Optional<Account> getAccountByUsername(String username){
+    public Optional<Account> getAccount(String username){
         Connection connection = ConnectionUtil.getConnection();
         try {
             String sql = "SELECT * FROM `account` WHERE `username` = ?";
@@ -62,7 +62,7 @@ public class AccountDao {
         return Optional.empty();
     }
 
-    public Optional<Account> getAccountByUsernameAndPassword(String username, String password){
+    public Optional<Account> getAccount(String username, String password){
         Connection connection = ConnectionUtil.getConnection();
         try{
             String sql = "SELECT * FROM `account` WHERE `username` = ? AND `password` = ?";
@@ -86,7 +86,7 @@ public class AccountDao {
         return Optional.empty();
     }
 
-    public Optional<Account> getAccountById(int id){
+    public Optional<Account> getAccount(int id){
         Connection connection = ConnectionUtil.getConnection();
         try{
             String sql = "SELECT * FROM `account` WHERE `account_id` = ?";
