@@ -4,7 +4,6 @@ import DAO.AccountDao;
 import DAO.MessageDao;
 import Model.Account;
 import Model.Message;
-import Util.ConnectionUtil;
 
 import java.util.Optional;
 import java.util.List;
