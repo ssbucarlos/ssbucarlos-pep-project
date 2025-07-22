@@ -2,7 +2,8 @@ package Controller;
 
 import Model.Account;
 import Model.Message;
-import Service.SocialMediaService;
+import Service.AccountService;
+import Service.MessageService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -32,7 +33,7 @@ public class SocialMediaController {
 
     private void registerHandler(Context ctx){
         Account account = ctx.bodyAsClass(Account.class);
-        SocialMediaService.instance().registerAccount(account).ifPresentOrElse(
+        AccountService.instance().registerAccount(account).ifPresentOrElse(
             a -> {
                 ctx.json(a);
                 ctx.status(200); // Not technically needed as this is the default
@@ -45,7 +46,7 @@ public class SocialMediaController {
     
     private void loginHandler(Context ctx){
         Account account = ctx.bodyAsClass(Account.class);
-        SocialMediaService.instance().loginToAccount(account).ifPresentOrElse(
+        AccountService.instance().loginToAccount(account).ifPresentOrElse(
             a -> {
                 ctx.json(a);
                 ctx.status(200);
@@ -58,7 +59,7 @@ public class SocialMediaController {
 
     private void messageCreationHandler(Context ctx){
         Message message = ctx.bodyAsClass(Message.class);
-        SocialMediaService.instance().insertMessage(message).ifPresentOrElse(
+        MessageService.instance().insertMessage(message).ifPresentOrElse(
             m -> {
                 ctx.json(m);
                 ctx.status(200);
@@ -70,13 +71,13 @@ public class SocialMediaController {
     }
 
     private void messageRetreiveAllHandler(Context ctx){
-        ctx.json(SocialMediaService.instance().getAllMessages());
+        ctx.json(MessageService.instance().getAllMessages());
         ctx.status(200);
     }
 
     private void messageRetreiveByIdHandler(Context ctx) throws NumberFormatException{
         int id = Integer.parseInt(ctx.pathParam("message_id"));
-        SocialMediaService.instance().getMessage(id).ifPresentOrElse(
+        MessageService.instance().getMessage(id).ifPresentOrElse(
             m -> ctx.json(m),
             () -> ctx.json("")
         );
@@ -85,7 +86,7 @@ public class SocialMediaController {
 
     private void messageDeleteHandler(Context ctx) throws NumberFormatException{
         int id = Integer.parseInt(ctx.pathParam("message_id"));
-        SocialMediaService.instance().deleteMessage(id).ifPresentOrElse(
+        MessageService.instance().deleteMessage(id).ifPresentOrElse(
             m -> ctx.json(m),
             () -> ctx.json("") 
         );
@@ -97,7 +98,7 @@ public class SocialMediaController {
         Message incoming_message_but_it_only_has_the_new_text_we_want = ctx.bodyAsClass(Message.class);
         String new_message_text = incoming_message_but_it_only_has_the_new_text_we_want.getMessage_text();
 
-        SocialMediaService.instance().updateMessage(message_that_needs_patching_id, new_message_text).ifPresentOrElse(
+        MessageService.instance().updateMessage(message_that_needs_patching_id, new_message_text).ifPresentOrElse(
             m -> {
                 ctx.json(m);
                 ctx.status(200);
@@ -111,7 +112,7 @@ public class SocialMediaController {
 
     private void messageRetreiveAllFromUserHandler(Context ctx) throws NumberFormatException{
         int id = Integer.parseInt(ctx.pathParam("account_id"));
-        ctx.json(SocialMediaService.instance().getAllMessagesFromUser(id));
+        ctx.json(MessageService.instance().getAllMessagesFromUser(id));
         ctx.status(200);
     }
 

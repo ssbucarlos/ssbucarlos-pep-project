@@ -1,54 +1,23 @@
 package Service;
 
+import java.util.List;
+import java.util.Optional;
+
 import DAO.AccountDao;
 import DAO.MessageDao;
-import Model.Account;
 import Model.Message;
 
-import java.util.Optional;
-import java.util.List;
+public class MessageService {
+    private static MessageService messageService = null;
 
-public class SocialMediaService {
-    private static SocialMediaService socialMediaService = null;
-
-    public static SocialMediaService instance(){
-        if (socialMediaService == null){
-            socialMediaService = new SocialMediaService();
+    public static MessageService instance(){
+        if (messageService == null){
+            messageService = new MessageService();
         }
-        return socialMediaService;
+        return messageService;
     }
 
-    private SocialMediaService(){}
-
-    private boolean isAccountInsertable(Account account){
-        if (account.getUsername() == null){
-            return false;
-        }
-        if (account.getPassword() == null){
-            return false;
-        }
-        if (account.getPassword().length() <= 3){
-            return false;
-        }
-        if (account.getUsername().isBlank()){
-            return false;
-        }
-        if (AccountDao.instance().getAccount(account.getUsername()).isPresent()){
-            return false;
-        }
-        return true;
-    }
-
-    public Optional<Account> registerAccount(Account account){
-        if (!isAccountInsertable(account)){
-            return Optional.empty();
-        }
-        return AccountDao.instance().insertAccount(account);
-    }
-
-    public Optional<Account> loginToAccount(Account account){
-        return AccountDao.instance().getAccount(account.getUsername(), account.getPassword());
-    }
+    private MessageService(){}
 
     private boolean isMessageValid(Message message){
         if (message.getMessage_text().isBlank()){
